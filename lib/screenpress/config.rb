@@ -13,14 +13,24 @@ module Screenpress
       @full_path
     end
 
+    def enabled=val
+      @enabled = val
+    end
+
     def enabled?
-      true
+      return !!@enabled if defined?(@enabled)
+      @enabled = calc_enabled
     end
 
     protected
 
     def root
       @root ||= Pathname.new(calc_root_string).expand_path
+    end
+
+    def calc_enabled
+      # TODO env variables or something?
+      true
     end
 
     def calc_root_string

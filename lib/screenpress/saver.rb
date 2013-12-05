@@ -23,16 +23,7 @@ module Screenpress
 
       ensure_directory
 
-      if Screenpress::Saver::Proxy.respond_to?(capybara.current_driver)
-        val = Screenpress::Saver::Proxy.send(capybara.current_driver, page.driver, filename)
-      else
-        warn "Screenpress could not detect a screenshot driver for '#{capybara.current_driver}'. Saving with default with unknown results."
-        val = Screenpress::Saver::Proxy.send(:default, page.driver, filename)
-      end
-
-      Capybara.save_and_open_page_path = old_path
-
-      val
+      Screenpress::Saver::Proxy.save!(capybara.current_driver, page.driver, filename)
     end
 
     def build_filename(filename)
@@ -48,8 +39,32 @@ module Screenpress
 
     class Proxy
       class << self
+        def save!(name, driver, filename)
+          return send(name, driver, filename) if self.respond_to?(name)
+            
+          klass = driver.class.name
+          if klass =~ /Selenium/
+            return send(:selenium, driver, filename)
+          elsif klass =~ /Mechanize/
+            return send(:mechanize, driver, filename)
+          elsif klass =~ /RackTest/
+            return send(:rack_test, driver, filename)
+          elsif klass =~ /Poltergeist/
+            return send(:poltergeist, driver, filename)
+          elsif klass =~ /Webkit/
+            return send(:webkit, driver, filename)
+          else
+            warn "Screenpress could not detect a screenshot driver for '#{capybara.current_driver}'. Saving with default with unknown results."
+            return send(:default, driver, filename)
+          end
+        end
+
         def default(driver, path)
-          driver.render(path)
+          if driver.respond_to?(:save_screenshot)
+            driver.save_screenshot(path)
+          else
+            driver.render(path)
+          end
           true
         end
 
