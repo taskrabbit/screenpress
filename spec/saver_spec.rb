@@ -9,8 +9,8 @@ describe Screenpress::Saver do
   let(:file_basename) { "my_screenshot" }
   let(:screenshot_path) { "#{Dir.pwd}#{image_dir}/#{file_basename}.png" }
 
-  let(:driver_mock) { double('Capybara driver').as_null_object }
-  let(:page_mock) { double('Capybara session page', :body => 'body', :driver => driver_mock).as_null_object }
+  let(:driver_mock) { double('Capybara driver') }
+  let(:page_mock) { double('Capybara session page', :body => 'body', :driver => driver_mock) }
   let(:capybara_mock) {
     double(Capybara).as_null_object.tap do |m|
       m.stub(:current_driver).and_return(:default)
@@ -105,7 +105,7 @@ describe Screenpress::Saver do
   describe "with unknown driver" do
     before do
       capybara_mock.stub(:current_driver).and_return(:unknown)
-      saver.stub(:warn).and_return(nil)
+      Screenpress::Saver::Proxy.stub(:warn).and_return(nil)
     end
 
     it 'should save driver render' do
@@ -115,9 +115,9 @@ describe Screenpress::Saver do
     end
 
     it 'should output warning about unknown results' do
-      # Not pure mock testing
-      saver.should_receive(:warn).with(/screenshot driver for 'unknown'.*unknown results/).and_return(nil)
-
+      # Not pure mock testing 
+      Screenpress::Saver::Proxy.should_receive(:warn).with(/screenshot driver for 'unknown'.*unknown results/).and_return(nil)
+      driver_mock.should_receive(:render)
       saver.save
     end
   end

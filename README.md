@@ -65,7 +65,7 @@ end
 
 * Allow a proc to be set for enablement
 * Maybe be more deliberate like Huxley and set modes (ENV variables?) for recording
-* Enable more that fails test if image changes
+* Enable mode that fails test if image changes
 * Enable tools to easily compare without Github (locally)
 
 

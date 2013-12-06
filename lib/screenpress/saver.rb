@@ -7,7 +7,7 @@ module Screenpress
     def initialize(filename, capybara = nil, page = nil)
       @capybara = capybara || Capybara
       @page     = page || @capybara.page
-      @filename = build_filename(filename)
+      @filename = filename
     end
 
     def save
@@ -26,11 +26,6 @@ module Screenpress
       Screenpress::Saver::Proxy.save!(capybara.current_driver, page.driver, filename)
     end
 
-    def build_filename(filename)
-      # TODO: see if have extension
-      "#{filename}.png"
-    end
-
     def ensure_directory
       folder = File.dirname(filename)
       return if File.directory?(folder)
@@ -41,7 +36,7 @@ module Screenpress
       class << self
         def save!(name, driver, filename)
           return send(name, driver, filename) if self.respond_to?(name)
-            
+          
           klass = driver.class.name
           if klass =~ /Selenium/
             return send(:selenium, driver, filename)
@@ -54,7 +49,7 @@ module Screenpress
           elsif klass =~ /Webkit/
             return send(:webkit, driver, filename)
           else
-            warn "Screenpress could not detect a screenshot driver for '#{capybara.current_driver}'. Saving with default with unknown results."
+            warn "Screenpress could not detect a screenshot driver for '#{name}'. Saving with default with unknown results."
             return send(:default, driver, filename)
           end
         end
