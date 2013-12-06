@@ -71,6 +71,6 @@ end
 
 ### Inspiration
 
-* [https://github.com/facebook/huxley](Huxley)
-* [https://github.com/BBC-News/wraith](Wraith)
-* [https://github.com/mattheworiordan/capybara-screenshot](Capybara Screenshot)
+* [Huxley](https://github.com/facebook/huxley)
+* [Wraith](https://github.com/BBC-News/wraith)
+* [Capybara Screenshot](https://github.com/mattheworiordan/capybara-screenshot)
