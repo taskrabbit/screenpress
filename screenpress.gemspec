@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["brian@bleonard.com"]
   spec.description   = %q{Workflow and Capybara extension that takes screenshots of your tests to prevent visual regressions}
   spec.summary       = %q{Prevent visual regressions}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/taskrabbit/screenpress"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
