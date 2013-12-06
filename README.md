@@ -1,29 +1,76 @@
 # Screenpress
 
-TODO: Write a gem description
+It happens. Your button is there but it's white on white on white and no one can see it. Especially your rspec tests.
 
-## Installation
+Screenpress integrates with your Capybara tests to implement a visual regression prevention workflow.
 
-Add this line to your application's Gemfile:
+## Setup
 
-    gem 'screenpress'
+```ruby
 
-And then execute:
+# acceptance_helper.rb
 
-    $ bundle
+require 'screenpress'
 
-Or install it yourself as:
+RSpec.configure do |config|
+  config.include ::Screenpress::DSL
+end
 
-    $ gem install screenpress
+```
 
-## Usage
+```ruby
 
-TODO: Write usage instructions here
+# your_spec.rb
 
-## Contributing
+visit '/tasks/new'
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+screenpress('tasks/form')
+
+```
+
+This will take a picture of the page and put it at `/screenpress/tasks/form.png` to review.
+
+## Workflow
+
+So it just takes a screenshot and puts in in a folder. So what?
+
+The thing is that it's now in git. If it's different, it's now on your diff and everyone can see what has changed.
+
+You've just added a visual design review to your development process and that's cool. Now we can go back in time and see when that header changed or not accept the pull request in the first place if the button is missing.
+
+### Options
+
+There are a few config options...
+
+```ruby
+# acceptance_helper.rb
+
+require 'screenpress'
+
+# Maybe you want to turn it off in some cases (like on your continuous integration server)
+Screenpress.config.enabled = false if ENV['JENKINS']
+
+# You can change where files are saved relative to project root (default if /screenpress)
+Screenpress.config.path = "/spec/screenpress"
+
+# Or provide the full path
+Screenpress.config.full_path = Rails.root.join("spec", "pictures")
+
+RSpec.configure do |config|
+  config.include ::Screenpress::DSL 
+end
+```
+
+### TODO
+
+* Allow a proc to be set for enablement
+* Maybe be more deliberate like Huxley and set modes (ENV variables?) for recording
+* Enable more that fails test if image changes
+* Enable tools to easily compare without Github (locally)
+
+
+### Inspiration
+
+* [https://github.com/facebook/huxley](Huxley)
+* [https://github.com/BBC-News/wraith](Wraith)
+* [https://github.com/mattheworiordan/capybara-screenshot](Capybara Screenshot)
