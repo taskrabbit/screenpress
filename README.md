@@ -67,7 +67,7 @@ end
 * Maybe be more deliberate like Huxley and set modes (ENV variables?) for recording
 * Enable mode that fails test if image changes
 * Enable tools to easily compare without Github (locally)
-
+* Is there a good way to automatically take screenshots or when example is tagged?
 
 ### Inspiration
 
