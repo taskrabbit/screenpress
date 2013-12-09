@@ -3,6 +3,7 @@ require "capybara"
 
 module Screenpress
   autoload :Config,    'screenpress/config'
+  autoload :Compare,   'screenpress/compare'
   autoload :DSL,       'screenpress/dsl'
   autoload :Saver,     'screenpress/saver'
 

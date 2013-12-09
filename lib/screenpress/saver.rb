@@ -17,19 +17,40 @@ module Screenpress
     end
 
     def save_screenshot
+      tmp_file = self.tmp_filename
+
       # settings to nil because of issues in some version of capybara
       old_path = Capybara.save_and_open_page_path
       Capybara.save_and_open_page_path = nil
 
       ensure_directory
 
-      Screenpress::Saver::Proxy.save!(capybara.current_driver, page.driver, filename)
+      return false unless Screenpress::Saver::Proxy.save!(capybara.current_driver, page.driver, tmp_file)
+
+      # is it different?
+      compare = Screenpress::Compare.new(filename, tmp_file, Screenpress.config.threshold)
+      if compare.same?
+        File.delete(tmp_file)
+      else
+        FileUtils.mv(tmp_file, filename)
+      end
+      return true
+
+    rescue Exception => e
+      File.delete(tmp_file) if tmp_file && File.exists?(tmp_file)
+      raise e
     end
 
     def ensure_directory
       folder = File.dirname(filename)
       return if File.directory?(folder)
       FileUtils.mkdir_p(folder)
+    end
+
+    def tmp_filename
+      tmp_dir  = Screenpress.config.full_tmp_path.to_s
+      tmp_file = "#{tmp_dir}/screenpress_#{File.basename(filename)}"
+      tmp_file
     end
 
     class Proxy

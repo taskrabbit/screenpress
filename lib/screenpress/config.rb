@@ -1,5 +1,7 @@
 module Screenpress
   class Config
+    attr_accessor :enabled
+
     def path=val
       self.full_path = root.join(val)
     end
@@ -13,13 +15,31 @@ module Screenpress
       @full_path
     end
 
-    def enabled=val
-      @enabled = val
+    def tmp_path=val
+      self.full_tmp_path=root.join(val)
+    end
+
+    def full_tmp_path=val
+      @full_tmp_path = Pathname.new(val).expand_path
+    end
+
+    def full_tmp_path
+      self.tmp_path = "tmp" unless @full_tmp_path
+      @full_tmp_path
     end
 
     def enabled?
-      return !!@enabled if defined?(@enabled)
-      @enabled = calc_enabled
+      return !!@calc_enabled if defined?(@calc_enabled)
+      @calc_enabled = calc_enabled
+    end
+
+    def threshold=val
+      # number between 0.0 and 100.0 for percentage of image that can change
+      @threshold = val.to_f
+    end
+
+    def threshold
+      @threshold ||= 0.1
     end
 
     protected

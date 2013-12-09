@@ -73,4 +73,5 @@ end
 
 * [Huxley](https://github.com/facebook/huxley)
 * [Wraith](https://github.com/BBC-News/wraith)
+* [Green Onion](https://github.com/intridea/green_onion)
 * [Capybara Screenshot](https://github.com/mattheworiordan/capybara-screenshot)
