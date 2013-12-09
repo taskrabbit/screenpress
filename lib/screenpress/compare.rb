@@ -45,8 +45,13 @@ module Screenpress
     # Run through all of the pixels on both org image, and fresh image. Change the pixel color accordingly.
     def update_diff_index(x, y, pixel)
       lowest_score = 1
-      return if pixel == fresh_image[x,y]
 
+      begin
+        return if pixel == fresh_image[x,y]
+      rescue ChunkyPNG::OutOfBounds
+          # off the edge!
+      end
+      
       # try a bit in each direction to account for differences
       [-2, -1, 0, 1, 2].each do |yd|
         [-1, 0, 1].each do |xd|
